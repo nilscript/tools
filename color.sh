@@ -23,8 +23,8 @@ for fgc in {30..37}; do
 
 		seq0="${vals:+\e[${vals}m}"
 		printf "  %-9s" "${seq0:-(default)}"
-		printf " ${seq0}TEXT\e[m"
-		printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
+		printf " %sTEXT\e[m" "${seq0}"
+		printf " \e[%s1mBOLD\e[m" "${vals:+${vals+$vals;}}"
 	done
 	printf "\n"
 done

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Euclidean algorithms. Or general algorithms applicable to cryptography.
 

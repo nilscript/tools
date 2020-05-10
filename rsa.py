@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from euclid import gcd
 import prime
 import random
