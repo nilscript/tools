@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 """
+Test-Util
+
 Usage:
     test-util spread <n>
 """
@@ -9,6 +11,8 @@ import sys
 from math import ceil
 from docopt import docopt
 from tabulate import tabulate
+from textwrap import indent
+
 
 def spread(n):
     """
@@ -43,9 +47,9 @@ def spread(n):
 
 if __name__ == '__main__':
  
- 
-    args = docopt(__doc__ + "\n" + 
-        tabulate([["spread <n>", spread.__doc__]], tablefmt="plain"))
+    helper = tabulate([["spread <n>", spread.__doc__]], tablefmt="plain")
+
+    args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
 
     if args["spread"]:
         for n in spread(int(args["<n>"])):

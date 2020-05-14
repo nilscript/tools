@@ -5,24 +5,28 @@ Stat
 
 Usage: 
     stat.py (mean|median|variance|std-dev) ([-]|--file=FILE|<input>...)
-
 """
 
 from numpy import sqrt, floor
 import scipy
+from tabulate import tabulate
 from docopt import docopt
+from textwrap import indent
 import sys
 
 
 def mean(data):
-    """Average"""
+    """
+    Returns the average number by summing data.
+    and dividing by the length of data.
+    """
     return sum(data) / len(data)
 
 
 def median(data):
     """
     Returns the middle value from a sorted list.
-    If list has even number of elements return the mean of the 2 middle numbers
+    If list has even number of elements return the average of the 2 middle numbers.
     """
     l = len(data)
 
@@ -35,18 +39,26 @@ def median(data):
 
 
 def variance(data):
-    """Variance. Ofter written as 's^2'. Rarely used"""
+    """
+    Returns the variance of data. 
+    Variance is often written as 's^2'. 
+    You probably want to use standard deviation instead.
+    """
     avg = mean(data)
     return sum(map(lambda x: (x - avg) ** 2, data)) / (len(data) - 1)
 
 
 def std_dev(data):
-    """Standard Deviation. Often written as 's'"""
+    """
+    Returns the standard deviation of data. Often written as 's'.
+    """
     return sqrt(variance(data))
 
 
 def stats(data):
-    """Prints information about data"""
+    """
+    Prints information about data.
+    """
     print("Mean:", mean(data))
     print("Median:", median(data))
     print("Sum:", sum(data))
@@ -70,7 +82,15 @@ def goodness_of_fit():
 
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
+
+    helper = tabulate([
+        ["mean", mean.__doc__],
+        ["median", median.__doc__],
+        ["variance", variance.__doc__],
+        ["std-dev", std_dev.__doc__]
+    ], tablefmt="plain")
+
+    args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
 
     data = []
 
