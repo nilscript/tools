@@ -8,31 +8,27 @@ Usage:
     prime up-to         <n> [--all]
     prime is            <n>
     prime probable      <n> [<k>]
-
-floor           <n>             Prints the approcimate lower limit of how big the nth prime could be.
-ceil            <n>             Print the approximate upper limit of how big the nth prime could be.
-nth             <n> [--all]     Print the nth prime. If option [--all] is present, print a list of all primes with size n.
-up-to           <n> [--all]     Print the last prime before n (not including n). If option [--all] is present, print a list of all primes up to n.
-is              <n>             Print a boolean (True | False) whether n is a prime or not. Also exits with code (0 | 1) where 0 is true and 1 is false.
-probable    <n> [<k>]           Print a boolean (True | False) whether n remains an unproven prime or a proven coprime. Also exits with code (0 | 1) where 0 is true and 1 is false. k repeats the test, default value is 10. Algorithm used is Miller Rabin test.
 """
 
-from docopt import docopt
-import numpy as np
-from random import randrange
 import secrets
+from random import randrange
 
-
+import numpy as np
+from docopt import docopt
+from tabulate import tabulate
+from textwrap import indent
 
 def floor(n):
+    """
+    Returns the approximate lower limit of how big the nth prime could be.
+    """
     return "TODO"  # TODO
 
 
 def ceil(n):
     """
-    Input > 0, 
     Returns the approximate upper limit of how big the nth prime could be.
-    https://math.stackexchange.com/a/1259
+    Source: https://math.stackexchange.com/a/1259
     """
     if n <= 0:
         return 0
@@ -44,7 +40,6 @@ def ceil(n):
 
 def nth(n):
     """
-    Input > 0,
     Returns an array of primes where the nth prime can be indexed by n - 1.
     """
 
@@ -55,7 +50,7 @@ def up_to(n):
     """
     Input n > 0, 
     Returns an array of primes between 2 (inclusive) and n (exclusive)
-    https://stackoverflow.com/a/3035188/10023360
+    Source: https://stackoverflow.com/a/3035188/10023360
     """
 
     if n <= 2:
@@ -63,7 +58,7 @@ def up_to(n):
     elif n == 3:
         return [2]
     else:
-        sieve = np.ones(n//3 + (n % 6 == 2), dtype=np.bool)
+        sieve = np.ones(int(n//3 + (n % 6 == 2)), dtype=np.bool)
         for i in range(1, int(n**0.5)//3+1):
             if sieve[i]:
                 k = 3*i+1 | 1
@@ -71,17 +66,15 @@ def up_to(n):
                 sieve[k*(k-2*(i & 1)+4)//3::2*k] = False
         return list(np.r_[2, 3, ((3*np.nonzero(sieve)[0][1:]+1) | 1)])
 
+
 def probable(n, k=10):
     """
     Returns true if n has not been proven to be a composit number and
     could be a prime.
     Returns false if n is proven to be a composit number.
-    Miller Rabin Test is non deterministic.
-
     k is the number of rounds that n is tested
-
-    https://gist.github.com/bnlucas/5857478
-
+    Miller Rabin Test is non deterministic.
+    Source: https://gist.github.com/bnlucas/5857478
     """
     # All negative integers (+ 0, 1) can't be a prime number (depending on who you ask)
     if n <= 1:
@@ -120,7 +113,17 @@ def probable(n, k=10):
 
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
+
+    helper = tabulate([
+        ["floor <n>", floor.__doc__],
+        ["ceil <n>", ceil.__doc__],
+        ["nth <n>", "Returns the nth prime. If option [--all] is present, also return all primes up to nth prime."],
+        ["up-to <n> [--all]", "Returns the last prime before n (exclusive). If option[--all] is present, return all primes up to n."],
+        ["is <n>", "Returns a boolean whether n is a prime or not."],
+        ["probable", probable.__doc__]
+    ], tablefmt="plain") + "\n\nBoolean options also exits with code (0 | 1)"
+    
+    args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
     n = int(args["<n>"])
 
     if args["floor"]:
