@@ -3,51 +3,50 @@
 """
 Usage:
     test-util spread <n>
-
-spread <n>  Returns a sequen ce of unique numbers where the first number is as far apart from the previous number. 
-
 """
 
 import sys
-import numpy
-import getopt
+from math import ceil
 from docopt import docopt
-
+from tabulate import tabulate
 
 def spread(n):
     """
-    This function will generate all numbers inbetween start and stop
-    (not including stop),
-    Yields them not in order but as far apart from all previously
-    yielded numbers.
+    Yields all numbers up to n not including n, by dividing n. 
+    Generator is usefull for testing performance on applications which can take 
+    integers continiously. The sequence of numbers will go from rough jumps to 
+    finer and finer sequences so a test can be aborted but the result of the 
+    test has balanced amount of data over the test range.
     """
 
-    # Used to safeguard so no number gets printed more than once.
-    # (This generator is not optimized to avoid these)
-    yielded = set([n-1])
+    def __spread(n, yielded=[]):
+        if n == 1:
+            yield n
+            return n
+        else:
+            yield n
 
-    # Will only return after all numbers are yielded
-    while len(yielded) != n:
-        tail = 0
+        # Used to safeguard so no number gets printed more than once.
+        # (This generator is not optimized to avoid these)
+        yielded.append(n)
+        for a in __spread(ceil(n / 2), yielded):
 
-        # Will iterate from beginning to end over and over again
-        # If something is yielded, then the medianvalue between tail and head
-        # might not be
-        for head in range(n):
-            if head in yielded:
-                median = (head + tail) // 2
-                tail = head
+            if a not in yielded:
+                yield a
 
-                # Safeguard against recurring numbers
-                if median not in yielded:
-                    yielded.add(median)
-                    yield median
+            b = 2 * n - a
+            if b < yielded[0] and b not in yielded:
+                yield b
+
+    return map(lambda n: n - 1, __spread(n))
 
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
+ 
+ 
+    args = docopt(__doc__ + "\n" + 
+        tabulate([["spread <n>", spread.__doc__]], tablefmt="plain"))
 
     if args["spread"]:
         for n in spread(int(args["<n>"])):
-            print(n, end=" ")
-        print()
+            print(n)
