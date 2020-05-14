@@ -38,7 +38,7 @@ def ex_gcd(a, b):
     """
     Extended Euclidean algorithm
 
-    Return (g, x, y) such that a*x + b*y = g = gcd(a, b)
+    Return (g, x, y) such that g = a*x + b*y = gcd(a, b)
     """
     x0, x1, y0, y1 = 0, 1, 1, 0
     while a != 0:
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     if args["gcd"]:
         print(gcd(a, b))
     elif args["ex-gcd"]:
-        print(a, b)
+        print(ex_gcd(a, b))
     elif args["lcm"]:
         print(lcm(a, b))
     elif args["phi"]:
