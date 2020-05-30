@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Test-Util
@@ -26,7 +26,7 @@ def spread(n):
     def __spread(n, yielded=[]):
         if n == 1:
             yield n
-            return n
+            return
         else:
             yield n
 
@@ -42,11 +42,11 @@ def spread(n):
             if b < yielded[0] and b not in yielded:
                 yield b
 
-    return map(lambda n: n - 1, __spread(n))
-
+    return map(lambda m: n - m, __spread(n)) 
+    # Maping reduces spread output by one
+    # and also starts the spread algorithm in the low end
 
 if __name__ == '__main__':
- 
     helper = tabulate([["spread <n>", spread.__doc__]], tablefmt="plain")
 
     args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
