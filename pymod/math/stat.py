@@ -4,15 +4,16 @@
 Stat
 
 Usage: 
-    stat.py (mean|median|variance|std-dev) ([-]|--file=FILE|<input>...)
+    stat.py (mean|median|var|stddev) ([-]|--file=FILE|<input>...)
 """
 
-from numpy import sqrt, floor
-import scipy
-from tabulate import tabulate
-from docopt import docopt
-from textwrap import indent
 import sys
+from textwrap import indent
+
+import scipy
+from docopt import docopt
+from numpy import floor, sqrt
+from tabulate import tabulate
 
 
 def mean(data):
@@ -38,7 +39,7 @@ def median(data):
         return data[l // 2]
 
 
-def variance(data):
+def var(data):
     """
     Returns the variance of data. 
     Variance is often written as 's^2'. 
@@ -48,11 +49,11 @@ def variance(data):
     return sum(map(lambda x: (x - avg) ** 2, data)) / (len(data) - 1)
 
 
-def std_dev(data):
+def stddev(data):
     """
     Returns the standard deviation of data. Often written as 's'.
     """
-    return sqrt(variance(data))
+    return sqrt(var(data))
 
 
 def stats(data):
@@ -62,15 +63,15 @@ def stats(data):
     print("Mean:", mean(data))
     print("Median:", median(data))
     print("Sum:", sum(data))
-    print("Var:", variance(data))
-    print("Std:", std_dev(data))
+    print("Var:", var(data))
+    print("Std:", stddev(data))
 
 
 def confidence_interval(data, level):
 
     avg = mean(data)
     l = len(data)
-    a = std_dev(data) / sqrt(l)
+    a = stddev(data) / sqrt(l)
 
     t = scipy.stats.t.ppf(level, l - 1)
 
@@ -83,15 +84,17 @@ def goodness_of_fit():
 
 if __name__ == '__main__':
 
+    # Fix input + help
     helper = tabulate([
         ["mean", mean.__doc__],
         ["median", median.__doc__],
-        ["variance", variance.__doc__],
-        ["std-dev", std_dev.__doc__]
+        ["var", var.__doc__],
+        ["stddev", stddev.__doc__]
     ], tablefmt="plain")
 
     args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
 
+    # Fix data:
     data = []
 
     if (args["--file"]):
@@ -104,17 +107,7 @@ if __name__ == '__main__':
     else:
         data = sys.stdin.read().split()
 
-    print(data)
     data = list(map(int, data))
 
-    if (args["mean"]):
-        print(mean(data))
-
-    elif (args["median"]):
-        print(median(data))
-
-    elif (args["variance"]):
-        print(variance(data))
-
-    elif (args["std-dev"]):
-        print(std_dev(data))
+    # Main logic:
+    print(eval(sys.argv[1] + "(" + str(data) + ")"))

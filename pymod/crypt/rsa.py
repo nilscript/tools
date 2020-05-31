@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from .euclid import gcd
 from ..math import prime
@@ -51,10 +51,10 @@ def probable_prime_pair(nlen, e):
     """
 
     if (nlen not in [2048, 3072] or
-            e <= pow(2, 16) or
-            e >= pow(2, 256) or
-            e & 1 == 0
-        ):
+                e <= pow(2, 16) or
+                e >= pow(2, 256) or
+                e & 1 == 0
+            ):
         return None
 
     MIN_KEY_LEN = numpy.sqrt(2) * pow(2, nlen/2 - 1)
@@ -70,9 +70,9 @@ def probable_prime_pair(nlen, e):
         p = secrets.randbits(nlen//2) | 1
 
         if (p > MIN_KEY_LEN and
-            gcd(p - 1, e) == 1 and
-            prime.probable(p, MR_TEST_ROUNDS)
-            ):
+                gcd(p - 1, e) == 1 and
+                prime.probable(p, MR_TEST_ROUNDS)
+                ):
             break
 
         i += 1
@@ -85,10 +85,10 @@ def probable_prime_pair(nlen, e):
         q = secrets.randbits(nlen//2) | 1
 
         if (abs(p - q) > MIN_KEY_LEN_DIFF and
-            q > MIN_KEY_LEN and
-            gcd(q - 1, MR_TEST_ROUNDS) == 1 and
-            prime.probable(q)
-            ):
+                q > MIN_KEY_LEN and
+                gcd(q - 1, MR_TEST_ROUNDS) == 1 and
+                prime.probable(q)
+                ):
             break
 
         i += 1
@@ -96,5 +96,4 @@ def probable_prime_pair(nlen, e):
             return None
 
     return p, q
-
 

@@ -1,22 +1,24 @@
 #!/usr/bin/env python
 
 """
-Usage: 
+Usage:
     prime floor         <n>
     prime ceil          <n>
     prime nth           <n> [--all]
-    prime up-to         <n> [--all]
-    prime is            <n>
+    prime upto          <n> [--all]
+    prime exists        <n>
     prime probable      <n> [<k>]
 """
 
 import secrets
+import sys
 from random import randrange
+from textwrap import indent
 
 import numpy as np
 from docopt import docopt
 from tabulate import tabulate
-from textwrap import indent
+
 
 def floor(n):
     """
@@ -40,16 +42,16 @@ def ceil(n):
 
 def nth(n):
     """
-    Returns an array of primes where the nth prime can be indexed by n - 1.
+    Returns an list of primes where the nth prime is the last element.
     """
 
-    return up_to(ceil(n) + 1)
+    return upto(ceil(n) + 1)[:n]
 
 
-def up_to(n):
+def upto(n):
     """
-    Input n > 0, 
-    Returns an array of primes between 2 (inclusive) and n (exclusive)
+    Input n > 0,
+    Returns an list of primes between 2 (inclusive) and n (exclusive)
     Source: https://stackoverflow.com/a/3035188/10023360
     """
 
@@ -65,6 +67,13 @@ def up_to(n):
                 sieve[k*k//3::2*k] = False
                 sieve[k*(k-2*(i & 1)+4)//3::2*k] = False
         return list(np.r_[2, 3, ((3*np.nonzero(sieve)[0][1:]+1) | 1)])
+
+
+def exists(n):
+    """
+    Returns true or false depending on if n is a prime
+    """
+    return n in upto(n+1)
 
 
 def probable(n, k=10):
@@ -114,44 +123,36 @@ def probable(n, k=10):
 
 if __name__ == '__main__':
 
+    # Fix input + help
     helper = tabulate([
         ["floor <n>", floor.__doc__],
         ["ceil <n>", ceil.__doc__],
         ["nth <n>", "Returns the nth prime. If option [--all] is present, also return all primes up to nth prime."],
-        ["up-to <n> [--all]", "Returns the last prime before n (exclusive). If option[--all] is present, return all primes up to n."],
-        ["is <n>", "Returns a boolean whether n is a prime or not."],
+        ["upto <n> [--all]",
+            "Returns the last prime before n (exclusive). If option[--all] is present, return all primes up to n."],
+        ["exists <n>", "Returns a boolean whether n is a prime or not."],
         ["probable", probable.__doc__]
     ], tablefmt="plain") + "\n\nBoolean options also exits with code (0 | 1)"
-    
+
     args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
-    n = int(args["<n>"])
 
-    if args["floor"]:
-        print(floor(n))
-    elif args["ceil"]:
-        print(ceil(n))
-    elif args["nth"]:
-        if args["--all"]:
-            print(nth(n)[:n])
-        else:
-            print(nth(n)[n-1])
-    elif args["up-to"]:
-        if args["--all"]:
-            print(up_to(n))
-        else:
-            print(up_to(n)[-1])
-    elif args["is"]:
-        if n in up_to(n+1):
-            print(True)
-            exit(0)
-        else:
-            print(False)
-            exit(1)
-    elif args["probable"]:
-        if args["<k>"]:
-            print(probable(n, int(args["<k>"])))
-            exit(0)
+    # Fix fn args
+    fn = globals().get(sys.argv[1])
 
+    fn_argc = fn.__code__.co_argcount
+    fn_argnames = fn.__code__.co_varnames[:fn_argc]
+
+    str_args = ','.join(map(lambda s: args['<'+s+'>'], fn_argnames))
+
+    # Main logic
+    ans = eval(fn.__name__ + '(' + str_args + ')')
+
+    # Print results:
+    if isinstance(ans, list):
+        if args["--all"]:
+            print(ans)
         else:
-            print(probable(n))
-            exit(1)
+            print(ans[-1])
+
+    else:
+        print(ans)
