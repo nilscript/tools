@@ -86,10 +86,10 @@ if __name__ == '__main__':
 
     # Fix input + help
     helper = tabulate([
-        ["mean", mean.__doc__],
-        ["median", median.__doc__],
-        ["var", var.__doc__],
-        ["stddev", stddev.__doc__]
+        ["mean <data>", mean.__doc__],
+        ["median <data>", median.__doc__],
+        ["var <data>", var.__doc__],
+        ["stddev <data>", stddev.__doc__]
     ], tablefmt="plain")
 
     args = docopt(__doc__ + "\nDescription:\n" + indent(helper, "    "))
