@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
 if ! [ -f "$HOME/.dmenurc" ]
 then
 	cp /usr/share/dmenu/dmenurs "$HOME"/.dmenurc

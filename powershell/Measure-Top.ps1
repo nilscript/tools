@@ -1,3 +1,5 @@
+#!/usr/bin/env powershell.exe
+
 while ($true) { 
     Get-Process | 
     Sort-Object -Descending cpu | 

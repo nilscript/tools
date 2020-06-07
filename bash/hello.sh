@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
 case "$1" in
 	there)
 		printf "General Kenobi!\n"

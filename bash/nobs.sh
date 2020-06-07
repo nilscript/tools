@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$1" = "--help" ]; then
 	printf "This command is equivalent to 'nohup <command> & > /dev/null'\n"

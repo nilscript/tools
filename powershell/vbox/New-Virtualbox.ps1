@@ -1,3 +1,5 @@
+#!/usr/bin/env powershell.exe
+
 Param (
     [Parameter(Mandatory = $True)][String]$VmName,
     [Parameter()][int]$RamGB = 4,

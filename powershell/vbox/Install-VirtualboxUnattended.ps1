@@ -1,3 +1,5 @@
+#!/usr/bin/env powershell.exe
+
 Param (
     [Parameter(Mandatory = $True)][String]$VmName, 
     [Parameter(Mandatory = $True)][String]$Username,

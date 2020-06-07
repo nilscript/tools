@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]
 then
     printf "\e[1m[Usage]\e[0m: %s\n" "$0"
